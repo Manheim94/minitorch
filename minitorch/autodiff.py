@@ -22,8 +22,11 @@ def central_difference(f: Any, *vals: Any, arg: int = 0, epsilon: float = 1e-6) 
     Returns:
         An approximation of $f'_i(x_0, \ldots, x_{n-1})$
     """
-    # TODO: Implement for Task 1.1.
-    raise NotImplementedError('Need to implement for Task 1.1')
+    args_list1 = list(vals)
+    args_list1[arg] += epsilon
+    args_list2 = list(vals)
+    args_list2[arg] -= epsilon
+    return (f(*args_list1)-f(*args_list2))/(2*epsilon)
 
 
 variable_count = 1
@@ -61,8 +64,23 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
     Returns:
         Non-constant Variables in topological order starting from the right.
     """
-    # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    # reverse post-order of dfs
+    def dfs(cur: Variable):
+        visited.add(cur.unique_id)
+        if cur.is_leaf():
+            res.append(cur)
+            return
+        
+        for next in cur.parents:
+            if next.is_constant() or next.unique_id in visited:
+                continue
+            dfs(next)
+        res.append(cur)
+    
+    res = []
+    visited = set()
+    dfs(variable)
+    return res[::-1]
 
 
 def backpropagate(variable: Variable, deriv: Any) -> None:
@@ -76,8 +94,22 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
 
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
-    # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    from collections import defaultdict, deque
+    deriv_dict = defaultdict(int)
+    deriv_dict[variable.unique_id] = deriv
+    t_sorted = topological_sort(variable)
+    queue = deque(t_sorted)
+    while queue:
+        poped = queue.popleft()
+        if poped.is_leaf():
+            continue
+        d_out = deriv_dict[poped.unique_id]
+        backs = poped.chain_rule(d_out)
+        for (va,deriv) in backs:
+            if va.is_leaf():
+                va.accumulate_derivative(deriv)
+            else:
+                deriv_dict[va.unique_id] += deriv
 
 
 @dataclass
