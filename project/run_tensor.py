@@ -60,7 +60,7 @@ class TensorTrain:
     def run_many(self, X):
         return self.model.forward(minitorch.tensor(X))
 
-    def train(self, data, learning_rate, max_epochs=500, log_fn=default_log_fn):
+    def train(self, data, learning_rate, max_epochs=1500, log_fn=default_log_fn):
 
         self.learning_rate = learning_rate
         self.max_epochs = max_epochs
@@ -97,7 +97,7 @@ class TensorTrain:
 
 if __name__ == "__main__":
     PTS = 50
-    HIDDEN = 2
-    RATE = 0.5
+    HIDDEN = 3
+    RATE = 0.1
     data = minitorch.datasets["Simple"](PTS)
     TensorTrain(HIDDEN).train(data, RATE)

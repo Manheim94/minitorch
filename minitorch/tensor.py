@@ -233,8 +233,6 @@ class Tensor:
         "Return a contiguous tensor with the same data"
         return Copy.apply(self)
 
-
-
     def __repr__(self) -> str:
         return self._tensor.to_string()
 

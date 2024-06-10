@@ -365,6 +365,7 @@ def tensor_reduce(
                 res = fn(res, a  )
             out[out_pos] = res
 
+
     return _reduce
 
 
